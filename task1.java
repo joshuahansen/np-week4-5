@@ -14,6 +14,7 @@ public class task1
             out.printf("Display name: %s\n", netIf.getDisplayName());
             out.printf("Name: %s\n", netIf.getName());
             displayMACAddress(netIf);
+            displayHostAddress(netIf);
             displaySubInterfaces(netIf);
             out.printf("\n");
         }
@@ -28,8 +29,12 @@ public class task1
         }
      }
 
-    static void displayMACAddress(NetworkInterface netIf) throws SocketException {
+    static void displayMACAddress(NetworkInterface netIf) throws SocketException 
+    {
+        if(!netIf.isLoopback())
+        {
             byte[] macByte = netIf.getHardwareAddress();
+            System.out.print("MAC Address: ");
             for(int i = 0; i < macByte.length; ++i)
             {
                 int x = macByte[i] & 0xFF;
@@ -38,5 +43,21 @@ public class task1
                     System.out.print(":");
             }
             System.out.println();
+        }
+    }
+    
+    static void displayHostAddress(NetworkInterface netIf) throws SocketException
+    {
+        Enumeration<InetAddress> inetAddresses = netIf.getInetAddresses();
+        for(InetAddress address : Collections.list(inetAddresses))
+        {
+            try {
+                    out.printf("Host Name: %s\n", address.getLocalHost().getHostName());
+            }catch(UnknownHostException ex)
+            {
+                System.out.println("Unknown Host: " + ex);
+            }
+            out.printf("Host Address: %s\n", address);
+        }
     }
 } 

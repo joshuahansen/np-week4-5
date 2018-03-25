@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.lang.*;
+import java.util.zip.*;
 
 class task2Client
 {
@@ -20,6 +21,8 @@ class task2Client
             {
                 System.out.println("Client: " + userInput);
                 output.println(userInput);
+                CheckedOutputStream cksum = new CheckedOutputStream(output.println(userInput), new CRC32());
+                System.out.println("Checksum: " + cksum.getChecksum().getValue());
                 String server = input.readLine();
                 if(server.equals("X"))
                 {

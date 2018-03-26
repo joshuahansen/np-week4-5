@@ -15,14 +15,16 @@ class task2Client
             Socket echoSocket = new Socket(serverHostname, serverPort);
             PrintWriter output = new PrintWriter(echoSocket.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-            BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(System.in));    
+            InputStream keyboardInputStream = System.in;
+            BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(keyboardInputStream));
+            CheckedInputStream cksum = new CheckedInputStream(keyboardInputStream, new CRC32());
             String userInput;
             while ((userInput = keyboardInput.readLine()) != null)
             {
                 System.out.println("Client: " + userInput);
-                output.println(userInput);
-                CheckedOutputStream cksum = new CheckedOutputStream(output.println(userInput), new CRC32());
+                cksum.getChecksum().update(userInput.getBytes(), 0, userInput.length());
                 System.out.println("Checksum: " + cksum.getChecksum().getValue());
+                output.println(userInput);
                 String server = input.readLine();
                 if(server.equals("X"))
                 {

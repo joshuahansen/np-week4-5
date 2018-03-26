@@ -10,10 +10,13 @@ class task2Client
     {
         String serverHostname = "127.0.0.1";
         int serverPort = 10007;
+        int cksumServerPort = 10008;
         displayDetails(serverPort);
         try {
             Socket echoSocket = new Socket(serverHostname, serverPort);
+            Socket cksumSocket = new Socket(serverHostname, cksumServerPort);
             PrintWriter output = new PrintWriter(echoSocket.getOutputStream(), true);
+            PrintWriter cksumOutput = new PrintWriter(cksumSocket.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
             InputStream keyboardInputStream = System.in;
             BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(keyboardInputStream));
@@ -25,6 +28,7 @@ class task2Client
                 cksum.getChecksum().update(userInput.getBytes(), 0, userInput.length());
                 System.out.println("Checksum: " + cksum.getChecksum().getValue());
                 output.println(userInput);
+                cksumOutput.println(cksum.getChecksum().getValue());
                 String server = input.readLine();
                 if(server.equals("X"))
                 {
